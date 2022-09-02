@@ -68,21 +68,23 @@ class CourseScraper:
             fieldSetThree = fieldSets[2].find_all("li", attrs={"class": "subheading"})
             dateTime = fieldSetThree[-1].find("p").text
 
-            result = []
-            timeFields = CourseScraper.parseDayOfTheWeek(dateTime)
+            if len(dateTime) > 1:
+                result = []
+                timeFields = CourseScraper.parseDayOfTheWeek(dateTime)
 
-            for entry in timeFields:
+                for entry in timeFields:
 
-                print(pTagsInFieldSetTwo[0].text)
+                    print(pTagsInFieldSetTwo[0].text)
 
-                course = {
-                    "classNbr": pTagsInFeildSetOne[1].text,
-                    "capacity": int(pTagsInFieldSetTwo[-2].text),
-                    "enrolled": int(pTagsInFieldSetTwo[-1].text),
-                }
+                    course = {
+                        "classNbr": pTagsInFeildSetOne[1].text,
+                        "capacity": int(pTagsInFieldSetTwo[-2].text),
+                        "enrolled": int(pTagsInFieldSetTwo[-1].text),
+                    }
 
-                result.append(course | entry)
-            return result
+                    result.append(course | entry)
+                return result
+
         return []
 
     def parseDayOfTheWeek(data):
@@ -152,9 +154,11 @@ if __name__ == "__main__":
     # testLink = "index.php?action=section&classNbr=84035&strm=1228"
     # testLink2 = "index.php?action=section&classNbr=88848&strm=1228"
     # testLink3 = "index.php?action=section&classNbr=83743&strm=1228"
+    # testLink4 = "index.php?action=section&classNbr=90391&strm=1228"
     # print(CourseScraper.getCourseData(testLink))
     # print(CourseScraper.getCourseData(testLink2))
     # print(CourseScraper.getCourseData(testLink3))
+    # print(CourseScraper.getCourseData(testLink4))
 
     data = CourseScraper.run()
     # f = open("demofile.json", "w+")
