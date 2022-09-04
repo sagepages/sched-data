@@ -66,6 +66,17 @@ class Pipeline:
         result = self.cur.fetchall()
         return result[0][0]
 
+    def queryCSCE(self, day, st, et):
+        statement = """
+        SELECT sum(enrolled) from Classes
+        where subject in ('CAP','COP','CEN','CGS','CIS','COT','COT','MAD','MHF','CDA','CNT','CTS','EEL','IDC','COM','EGN','ESI','TCN', 'BME')
+        and dow = %s and startTime <= %s and endTime >= %s
+        """
+
+        self.cur.execute(statement, (day, st, et))
+        result = self.cur.fetchall()
+        return result[0][0]
+
     def execute_test(self):
         print("PostgreSQL database Version: ")
         self.cur.execute("SELECT version()")

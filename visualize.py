@@ -1,4 +1,3 @@
-import numpy as np
 import seaborn as sns
 import matplotlib.pylab as plt
 from Pipeline import Pipeline
@@ -13,6 +12,20 @@ def getData(dow, timeRoll):
             et = st + 1
             result = pipeline.query_data(day, timeRoll[st], timeRoll[et])
             data[day].append(result)
+    return data
+
+
+def getCSData(dow, timeRoll):
+    pipeline = Pipeline()
+    data = {"Mo": [], "Tu": [], "We": [], "Th": [], "Fr": [], "Sa": [], "Su": []}
+    for day in dow:
+        for st in range(len(timeRoll) - 1):
+            et = st + 1
+            result = pipeline.queryCSCE(day, timeRoll[st], timeRoll[et])
+            if result is None:
+                data[day].append(0)
+            else:
+                data[day].append(result)
     return data
 
 
@@ -80,8 +93,8 @@ if __name__ == "__main__":
         "8",
         "20:30",
     ]
-
-    data = getData(dow, timeRoll)
+    # data = getData(dow, timeRoll)
+    data = getCSData(dow, timeRoll)
     uniform_data = [
         data["Mo"],
         data["Tu"],
@@ -93,7 +106,7 @@ if __name__ == "__main__":
     yAxisLabels = ["Mo", "Tu", "We", "Th", "Fr"]
 
     ax = sns.heatmap(
-        uniform_data, linewidth=3.0, xticklabels=xAxisLabels, yticklabels=yAxisLabels
+        uniform_data, linewidth=1.5, xticklabels=xAxisLabels, yticklabels=yAxisLabels
     )
 
     for i, t in enumerate(ax.get_xticklabels()):
@@ -104,5 +117,8 @@ if __name__ == "__main__":
         item.set_rotation(45)
     for item in ax.get_yticklabels():
         item.set_rotation(45)
+
+    # ax.set(title="Number of students on MMC by half hour")
+    ax.set(title="Number of students on MMC by half hour - (CS/CE Only)")
 
     plt.show()
