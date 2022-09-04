@@ -66,25 +66,33 @@ class CourseScraper:
         if "Modesto" in pTagsInFeildSetOne[3].text:
             pTagsInFieldSetTwo = fieldSets[1].find_all("p", attrs={"class": "data"})
             fieldSetThree = fieldSets[2].find_all("li", attrs={"class": "subheading"})
-            dateTime = fieldSetThree[-1].find("p").text
+            try:
+                dateTime = fieldSetThree[-1].find("p").text
+            except IndexError:
+                return []
 
             if len(dateTime) > 1:
                 result = []
                 timeFields = CourseScraper.parseDayOfTheWeek(dateTime)
 
+                classNbr = pTagsInFeildSetOne[1].text
+
+                if len(pTagsInFieldSetTwo) < 2:
+                    capacity = int(pTagsInFieldSetTwo[0].text)
+                    enrolled = 0
+                else:
+                    capacity = int(pTagsInFieldSetTwo[-2].text)
+                    enrolled = int(pTagsInFieldSetTwo[-1].text)
+
                 for entry in timeFields:
-
-                    print(pTagsInFieldSetTwo[0].text)
-
                     course = {
-                        "classNbr": pTagsInFeildSetOne[1].text,
-                        "capacity": int(pTagsInFieldSetTwo[-2].text),
-                        "enrolled": int(pTagsInFieldSetTwo[-1].text),
+                        "classNbr": classNbr,
+                        "capacity": capacity,
+                        "enrolled": enrolled,
                     }
 
                     result.append(course | entry)
                 return result
-
         return []
 
     def parseDayOfTheWeek(data):
@@ -119,23 +127,21 @@ class CourseScraper:
         out_time = datetime.strftime(in_time, "%H:%M")
         return out_time
 
-    def run():
+    def startScraping(subj):
         data = []
-        subjectList = CourseScraper.getListOfSubjects()
-        for subj in subjectList:
-            numbers = CourseScraper.getListOfCourseNumbersFromSubjectList(subj)
-            links = CourseScraper.getListOfLinksToCourses(subj, numbers)
-            for link in links:
-                print(link)
-                result = CourseScraper.getCourseData(link)
-                for res in result:
-                    if not res:
-                        res["subject"] = subj
-                        data.append(res)
+        numbers = CourseScraper.getListOfCourseNumbersFromSubjectList(subj)
+        links = CourseScraper.getListOfLinksToCourses(subj, numbers)
+        for link in links:
+            result = CourseScraper.getCourseData(link)
+            for res in result:
+                if res:
+                    res["subject"] = subj
+                    data.append(res)
         return data
 
 
 if __name__ == "__main__":
+
     testCourseNumberList = ["2021"]
 
     # Test getSubjectList()
@@ -155,12 +161,22 @@ if __name__ == "__main__":
     # testLink2 = "index.php?action=section&classNbr=88848&strm=1228"
     # testLink3 = "index.php?action=section&classNbr=83743&strm=1228"
     # testLink4 = "index.php?action=section&classNbr=90391&strm=1228"
+    # testLink5 = "index.php?action=section&classNbr=89226&strm=1228"
+    # testLink6 = "index.php?action=section&classNbr=88066&strm=1228"
+    # testLink7 = "index.php?action=section&classNbr=88063&strm=1228"
     # print(CourseScraper.getCourseData(testLink))
     # print(CourseScraper.getCourseData(testLink2))
     # print(CourseScraper.getCourseData(testLink3))
     # print(CourseScraper.getCourseData(testLink4))
+    # print(CourseScraper.getCourseData(testLink5))
+    # print(CourseScraper.getCourseData(testLink6))
+    # print(CourseScraper.getCourseData(testLink7))
 
-    data = CourseScraper.run()
+    # print(
+    #     CourseScraper.startScraping("index.php?action=section&classNbr=88848&strm=1228")
+    # )
+
+    # data = CourseScraper.run()
     # f = open("demofile.json", "w+")
     # for datapoint in data:
     # f.write(datapoint)
