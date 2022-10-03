@@ -25,6 +25,7 @@ class Pipeline:
                     classNbr int,
                     capacity int,
                     enrolled int,
+                    location varchar(50)
                     startTime time,
                     endTime time,
                     dow varchar(5),
@@ -38,7 +39,7 @@ class Pipeline:
 
         statement = """
         INSERT INTO classes
-        Values(DEFAULT, %s, %s, %s, %s, %s, %s, %s)
+        Values(DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         self.cur.execute(
@@ -47,6 +48,7 @@ class Pipeline:
                 classesObj["classNbr"],
                 classesObj["capacity"],
                 classesObj["enrolled"],
+                classesObj["location"],
                 classesObj["startTime"],
                 classesObj["endTime"],
                 classesObj["dow"],
@@ -86,5 +88,5 @@ class Pipeline:
 
 if __name__ == "__main__":
     pipeline = Pipeline()
-    # pipline.execute_test()
-    print(pipeline.query_data("Mo", "7:00", "7:30")[0][0])
+    pipeline.execute_test()
+    # print(pipeline.query_data("Mo", "7:00", "7:30")[0][0])

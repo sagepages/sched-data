@@ -62,6 +62,8 @@ class CourseScraper:
 
         fieldSets = divContent.find_all("fieldset")
         pTagsInFeildSetOne = fieldSets[0].find_all("p", attrs={"class": "data"})
+        pTagsInFeildSetThree = fieldSets[2].find_all("p", attrs={"class": "data"})
+        print(pTagsInFeildSetThree[0].text)
 
         if "Modesto" in pTagsInFeildSetOne[3].text:
             pTagsInFieldSetTwo = fieldSets[1].find_all("p", attrs={"class": "data"})
@@ -89,6 +91,7 @@ class CourseScraper:
                         "classNbr": classNbr,
                         "capacity": capacity,
                         "enrolled": enrolled,
+                        "location": pTagsInFeildSetThree[0].text,
                     }
 
                     result.append(course | entry)
@@ -143,6 +146,8 @@ class CourseScraper:
 if __name__ == "__main__":
 
     testCourseNumberList = ["2021"]
+    testlink = "index.php?action=section&classNbr=84799&strm=1228"
+    print(CourseScraper.getCourseData(testlink))
 
     # Test getSubjectList()
     # print(CourseScraper.getSubjectList())
